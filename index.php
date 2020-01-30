@@ -1,5 +1,7 @@
 <?php include 'assets/functions.php'; ?>
 <?php require_once 'assets/classes.php'; ?>
+<?php include 'assets/api.php' ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,9 +81,54 @@
     <div class="container">
         <h5>Database</h5>
         <div class="p-4 card">
-            form
+            <form action="index.php" method="POST" id="dbForm">
+                <div class="form-group">
+                    <label for="db_type">Database type</label>
+                    <select name="db_type" id="db_type" class="form-control">
+                        <?php
+                            foreach (DbConnection::DRIVERS as $driver) {
+                                ?>
+                                <option value="<?php echo $driver; ?>"
+                                <?php if (DbConnection::getInstance()->getDriver() === $driver) echo 'selected'?>
+                                ><?php echo $driver; ?></option>
+                                <?php
+                            }
+                        ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="db_host">Host</label>
+                    <input type="text" class="form-control" name="db_host" id="db_host" value="<?php echo DbConnection::getInstance()->getHost() ?>" placeholder="localhost">
+                </div>
+
+                <div class="form-group">
+                    <label for="db_port">Port (optional)</label>
+                    <input type="text" class="form-control" name="db_port" id="db_port" value="<?php echo DbConnection::getInstance()->getPort() ?>" placeholder="3306">
+                </div>
+
+                <div class="form-group">
+                    <label for="db_name">Database name</label>
+                    <input type="text" class="form-control" name="db_name" id="db_name" value="<?php echo DbConnection::getInstance()->getDbName() ?>" placeholder="db_simplo">
+                </div>
+
+                <div class="form-group">
+                    <label for="db_user">Login</label>
+                    <input type="text" class="form-control" name="db_user" id="db_user" value="<?php echo DbConnection::getInstance()->getUser() ?>" placeholder="root">
+                </div>
+
+                <div class="form-group">
+                    <label for="db_password">Password</label>
+                    <input type="text" class="form-control" name="db_password" id="db_password" value="<?php echo DbConnection::getInstance()->getPassword() ?>">
+                </div>
+
+                <button class="btn btn-info" id="dbButton">Check connection</button>
+                <span id="dbResult"></span>
+            </form>
         </div>
     </div>
 </body>
+
+<?php include 'assets/scripts.php' ?>
 </html>
 <?php

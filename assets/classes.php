@@ -142,15 +142,37 @@ class DbConnection
     ];
 
     private $driver = 'MySQL';
-    private $host = '';
-    private $user = '';
+    private $host = 'localhost';
+    private $user = 'root';
     private $password = '';
-    private $dbName = '';
+    private $dbName = 'db_simplo';
     private $port = '3306';
 
     private function __construct()
     {
-        //
+        if (isset($_COOKIE['db_driver'])) {
+            $this->driver = $_COOKIE['db_driver'];
+        }
+
+        if (isset($_COOKIE['db_host'])) {
+            $this->host = $_COOKIE['db_host'];
+        }
+
+        if (isset($_COOKIE['db_user'])) {
+            $this->user = $_COOKIE['db_user'];
+        }
+
+        if (isset($_COOKIE['db_password'])) {
+            $this->password = $_COOKIE['db_password'];
+        }
+
+        if (isset($_COOKIE['db_port'])) {
+            $this->port = $_COOKIE['db_port'];
+        }
+
+        if (isset($_COOKIE['db_name'])) {
+            $this->dbName = $_COOKIE['db_name'];
+        }
     }
 
     public static function getInstance()
@@ -184,33 +206,67 @@ class DbConnection
         try {
             return new PDO($connection, $this->user, $this->password);
         } catch (PDOException $e) {
-            return null;
+            return $e;
         }
     }
 
-    public  function setDriver(string $driver)
+    public function setDriver(string $driver)
     {
         $this->driver = $driver;
     }
 
-    public  function setHost(string $host)
+    public function setHost(string $host)
     {
         $this->host = $host;
     }
 
-    public  function setUser(string $user)
+    public function setUser(string $user)
     {
         $this->user = $user;
     }
 
-    public  function setPassword(string $password)
+    public function setPassword(string $password)
     {
         $this->password = $password;
     }
 
-    public  function setDatabase(string $dbName, string $port)
+    public function setDbName(string $dbName)
     {
         $this->dbName = $dbName;
+    }
+
+    public function setPort(string $port)
+    {
         $this->port = $port;
+    }
+
+    public function getDriver()
+    {
+        return $this->driver;
+    }
+
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    public function getDbName()
+    {
+        return $this->dbName;
+    }
+
+    public function getPort()
+    {
+        return $this->port;
     }
 }
