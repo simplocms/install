@@ -270,3 +270,96 @@ class DbConnection
         return $this->port;
     }
 }
+
+class Admin
+{
+    private static $instance = null;
+    
+    private $firstName = '';
+    private $lastName = '';
+    private $email = '';
+    private $login = '';
+    private $password = '';
+
+    private function __construct()
+    {
+        if (isset($_COOKIE['admin_first_name'])) {
+            $this->firstName = $_COOKIE['admin_first_name'];
+        }
+
+        if (isset($_COOKIE['admin_last_name'])) {
+            $this->lastName = $_COOKIE['admin_last_name'];
+        }
+
+        if (isset($_COOKIE['admin_email'])) {
+            $this->email = $_COOKIE['admin_email'];
+        }
+
+        if (isset($_COOKIE['admin_password'])) {
+            $this->password = $_COOKIE['admin_password'];
+        }
+
+        if (isset($_COOKIE['admin_login'])) {
+            $this->login = $_COOKIE['admin_login'];
+        }
+    }
+
+    public static function getInstance()
+    {
+        if (! self::$instance) {
+            self::$instance = new Admin();
+        }
+
+        return self::$instance;
+    }
+
+    public function setFirstName(string $firstName)
+    {
+        $this->firstName = $firstName;
+    }
+
+    public function setLastName(string $lastName)
+    {
+        $this->lastName = $lastName;
+    }
+
+    public function setEmail(string $email)
+    {
+        $this->email = $email;
+    }
+
+    public function setPassword(string $password)
+    {
+        $this->password = $password;
+    }
+
+    public function setLogin(string $login)
+    {
+        $this->login = $login;
+    }
+
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    public function getLogin()
+    {
+        return $this->login;
+    }
+}

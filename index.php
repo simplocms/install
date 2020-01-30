@@ -127,6 +127,46 @@
             </form>
         </div>
     </div>
+
+    <div class="container">
+        <h5>Administrator</h5>
+        <div class="p-4 card">
+            <form action="index.php" method="POST" id="dbForm">
+                <div class="form-group">
+                    <label for="admin_first_name">First name</label>
+                    <input type="text" class="form-control" name="admin_first_name" id="admin_first_name" value="<?php echo Admin::getInstance()->getFirstName() ?>">
+                </div>
+
+                <div class="form-group">
+                    <label for="admin_last_name">Last name</label>
+                    <input type="text" class="form-control" name="admin_last_name" id="admin_last_name" value="<?php echo Admin::getInstance()->getLastName() ?>">
+                </div>
+
+                <div class="form-group">
+                    <label for="admin_email">E-mail</label>
+                    <input type="email" class="form-control" name="admin_email" id="admin_email" value="<?php echo Admin::getInstance()->getEmail() ?>">
+                </div>
+
+                <div class="form-group">
+                    <label for="admin_login">Login</label>
+                    <input type="text" class="form-control" name="admin_login" id="admin_login" value="<?php echo Admin::getInstance()->getLogin() ?>" placeholder="db_simplo">
+                </div>
+
+                <div class="form-group">
+                    <label for="admin_password">Password</label>
+                    <input type="password" class="form-control" name="admin_password" id="admin_password" value="<?php echo Admin::getInstance()->getPassword() ?>" placeholder="root">
+                    <span id="adminPasswordError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="admin_password_confirm">Confirm password</label>
+                    <input type="password" class="form-control" name="admin_password_confirm" id="admin_password_confirm" value="<?php echo Admin::getInstance()->getPassword() ?>" placeholder="root">
+                </div>
+
+                <button class="btn btn-info" id="dbButton">Install</button>
+            </form>
+        </div>
+    </div>
 </body>
 
 <?php include 'assets/scripts.php' ?>
