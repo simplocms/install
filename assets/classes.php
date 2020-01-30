@@ -150,29 +150,7 @@ class DbConnection
 
     private function __construct()
     {
-        if (isset($_COOKIE['db_driver'])) {
-            $this->driver = $_COOKIE['db_driver'];
-        }
-
-        if (isset($_COOKIE['db_host'])) {
-            $this->host = $_COOKIE['db_host'];
-        }
-
-        if (isset($_COOKIE['db_user'])) {
-            $this->user = $_COOKIE['db_user'];
-        }
-
-        if (isset($_COOKIE['db_password'])) {
-            $this->password = $_COOKIE['db_password'];
-        }
-
-        if (isset($_COOKIE['db_port'])) {
-            $this->port = $_COOKIE['db_port'];
-        }
-
-        if (isset($_COOKIE['db_name'])) {
-            $this->dbName = $_COOKIE['db_name'];
-        }
+        //
     }
 
     public static function getInstance()
@@ -204,7 +182,7 @@ class DbConnection
         $connection = $dsn . ':host=' . $this->host . ';port=' . $this->port . ';dbname=' . $this->dbName;
 
         try {
-            return new PDO($connection, $this->user, $this->password);
+            return new PDO($connection, $this->user, $this->password ?: null);
         } catch (PDOException $e) {
             return $e;
         }
@@ -283,25 +261,7 @@ class Admin
 
     private function __construct()
     {
-        if (isset($_COOKIE['admin_first_name'])) {
-            $this->firstName = $_COOKIE['admin_first_name'];
-        }
-
-        if (isset($_COOKIE['admin_last_name'])) {
-            $this->lastName = $_COOKIE['admin_last_name'];
-        }
-
-        if (isset($_COOKIE['admin_email'])) {
-            $this->email = $_COOKIE['admin_email'];
-        }
-
-        if (isset($_COOKIE['admin_password'])) {
-            $this->password = $_COOKIE['admin_password'];
-        }
-
-        if (isset($_COOKIE['admin_login'])) {
-            $this->login = $_COOKIE['admin_login'];
-        }
+        //
     }
 
     public static function getInstance()

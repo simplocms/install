@@ -131,7 +131,7 @@
     <div class="container">
         <h5>Administrator</h5>
         <div class="p-4 card">
-            <form action="index.php" method="POST" id="dbForm">
+            <form action="index.php" method="POST" id="adminForm">
                 <div class="form-group">
                     <label for="admin_first_name">First name</label>
                     <input type="text" class="form-control" name="admin_first_name" id="admin_first_name" value="<?php echo Admin::getInstance()->getFirstName() ?>">
@@ -149,21 +149,22 @@
 
                 <div class="form-group">
                     <label for="admin_login">Login</label>
-                    <input type="text" class="form-control" name="admin_login" id="admin_login" value="<?php echo Admin::getInstance()->getLogin() ?>" placeholder="db_simplo">
+                    <input type="text" class="form-control" name="admin_login" id="admin_login" value="<?php echo Admin::getInstance()->getLogin() ?>">
                 </div>
 
                 <div class="form-group">
                     <label for="admin_password">Password</label>
-                    <input type="password" class="form-control" name="admin_password" id="admin_password" value="<?php echo Admin::getInstance()->getPassword() ?>" placeholder="root">
+                    <input type="password" class="form-control" name="admin_password" id="admin_password" value="<?php echo Admin::getInstance()->getPassword() ?>">
                     <span id="adminPasswordError"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="admin_password_confirm">Confirm password</label>
-                    <input type="password" class="form-control" name="admin_password_confirm" id="admin_password_confirm" value="<?php echo Admin::getInstance()->getPassword() ?>" placeholder="root">
+                    <input type="password" class="form-control" name="admin_password_confirm" id="admin_password_confirm" value="<?php echo Admin::getInstance()->getPassword() ?>">
+                    <span id="adminPasswordConfirmError"></span>
                 </div>
 
-                <button class="btn btn-info" id="dbButton">Install</button>
+                <button class="btn btn-info" id="adminButton">Install</button>
             </form>
         </div>
     </div>
