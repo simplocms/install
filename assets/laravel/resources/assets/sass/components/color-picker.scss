@@ -1,0 +1,59 @@
+/*
+------------------------------------------------------------------------------
+*
+*  # Color picker component
+*
+* ----------------------------------------------------------------------------
+*/
+
+.color-picker {
+  .dropdown-menu {
+    list-style: none;
+    width: 125px;
+
+    > li:not(.divider) {
+      display: inline;
+      cursor: pointer;
+
+      &:hover > .sample {
+        border: 1px solid #cccccc;
+      }
+    }
+
+    > li.with-text {
+      padding: 5px;
+      vertical-align: top;
+      line-height: 35px;
+    }
+  }
+
+  .sample {
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    margin: 5px;
+    box-shadow: 1px 1px 5px 1px #ccc;
+  }
+
+  .dropdown-toggle {
+    padding: 4px 10px 0;
+
+    .caret {
+      vertical-align: top;
+      margin: 5px 0 0 10px;
+    }
+
+    > .sample {
+      box-shadow: none;
+      margin: 0;
+    }
+  }
+
+  .sample.none {
+    border: 1px solid black;
+    background: white;
+    background: linear-gradient(to bottom right,
+        white 53.33%, red 33.33%,
+        red 66.66%, white 56.66%);
+  }
+}

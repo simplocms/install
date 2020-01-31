@@ -1,0 +1,20 @@
+{
+    "name": "admin-module/articles-list",
+    "description": "Module for printing configurable list of articles on page.",
+    "version": "2.0.0",
+    "authors": [
+        {
+            "name": "Simplo.cz",
+            "email": "info@simplo.cz"
+        },
+        {
+            "name": "Patrik Václavek",
+            "email": "vaclavek.patrik@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Modules\\ArticlesList\\": ""
+        }
+    }
+}

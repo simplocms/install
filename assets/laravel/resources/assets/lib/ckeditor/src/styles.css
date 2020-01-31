@@ -1,0 +1,29 @@
+.ck-content {
+  min-height: 400px;
+  max-height: 800px;
+}
+
+.modal-body .ck-content {
+  max-height: calc(100vh - 340px);
+}
+
+@media all and (max-height: 500px), all and (max-width:400px) {
+  .modal-body .ck-content {
+    min-height: 150px;
+  }
+}
+
+figure.image > a,
+figure.image > a > img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.ck-non-breaking-space {
+  color: #7f0620;
+}
+
+.ck-non-breaking-space:after {
+  content: '⬌'
+}

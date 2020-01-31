@@ -86,43 +86,24 @@ class Optional
             $exists = class_exists('Imagick');
                 break;
             case 'optim':
-                if ($output = shell_exec('jpegoptim -v')) {
-                    $exists = true;
-                } else {
-                    $exists = false;
-                }
+                exec('jpegoptim -v', $output, $val);
+                $exists = $val == 0 ? true : false;
                 break;
             case 'opti':
-                if ($output = shell_exec('optipng -v')) {
-                    $exists = true;
-                } else {
-                    $exists = false;
-                }
+                exec('optipng -v', $output, $val);
+                $exists = $val == 0 ? true : false;
                 break;
             case 'quant':
-                if ($output = shell_exec('pngquant --version')) {
-                    if ($output[0] == 2) {
-                        $exists = true;
-                    } else {
-                        $exists = false;
-                    }
-                } else {
-                    $exists = false;
-                }
+                exec('pngquant --version', $output, $val);
+                $exists = ($val == 0) && ($output[0][0] == 2) ? true : false;
                 break;
             case 'svg':
-                if ($output = shell_exec('svgo -v')) {
-                    $exists = true;
-                } else {
-                    $exists = false;
-                }
+                exec('svgo -v', $output, $val);
+                $exists = $val == 0 ? true : false;
                 break;
             case 'gif':
-                if ($output = shell_exec('gifsicle -v')) {
-                    $exists = true;
-                } else {
-                    $exists = false;
-                }
+                exec('gifsicle -v', $output, $val);
+                $exists = $val == 0 ? true : false;
                 break;
         }
     
@@ -165,7 +146,7 @@ class DbConnection
     public function getConnection() {
         $dsn = 'mysql';
         switch ($this->driver) {
-            case 'MySql':
+            case 'MySQL':
                 $dsn = 'mysql';
                 break;
             case 'PostgreSQL':
@@ -179,12 +160,37 @@ class DbConnection
                 break;
         }
 
-        $connection = $dsn . ':host=' . $this->host . ';port=' . $this->port . ';dbname=' . $this->dbName;
+        $connection = $dsn . ':host=' . $this->host;
+        if ($this->port) {
+            $connection .= ';port=' . $this->port;
+        }
+        
+        $connection .= ';dbname=' . $this->dbName;
 
         try {
-            return new PDO($connection, $this->user, $this->password ?: null);
+            $pdo = new PDO($connection, $this->user, $this->password ?: null);
         } catch (PDOException $e) {
-            return $e;
+            (new CustomException($e->getMessage()))->throw();            
+        }
+
+        // empty database
+        if ($this->driver == 'PostgreSQL') {
+            $rows = $pdo->query("select table_name from information_schema.tables where table_schema = 'public'", PDO::FETCH_NUM);
+        } else if ($this->driver == 'SQLite') {
+            $rows = $pdo->query("select name from sqlite_master where type='table'", PDO::FETCH_NUM);
+        }
+        elseif ($this->driver === 'SQL Server') {
+            $rows = $pdo->query("select [table_name] from information_schema.tables", PDO::FETCH_NUM);
+        }
+        elseif ($this->driver === 'MySQL') {
+            $rows = $pdo->query('show tables', PDO::FETCH_NUM);
+        } else {
+            (new CustomException('Unknowkn database driver ' . $this->driver))->throw();
+        }
+
+        $tableExists = false;
+        while ($rows->fetch()) {
+            (new CustomException('Database ' . $this->dbName . ' is not empty!'))->throw();
         }
     }
 
@@ -246,6 +252,38 @@ class DbConnection
     public function getPort()
     {
         return $this->port;
+    }
+
+    public function writeEnv()
+    {
+        $env = fopen(__DIR__ . '/laravel/.env', "w");
+        if (! $env) {
+            (new CustomException("Unable to open file .env"))->throw();
+        }
+
+        $content = "APP_NAME=simplocms\n";
+        $content .= "APP_ENV=production\n";
+        $content .= "APP_DEBUG=false\n";
+        $content .= "APP_URL=http://localhost\n";
+        $content .= "\n";
+        $content .= "DB_CONNECTION=" . $this->driver . "\n";
+        $content .= "DB_HOST=" . $this->host . "\n";
+        $content .= "DB_PORT=" . $this->port . "\n";
+        $content .= "DB_DATABASE=" . $this->dbName . "\n";
+        $content .= "DB_USERNAME=" . $this->user . "\n";
+        $content .= "DB_PASSWORD=" . $this->password . "\n";
+        $content .= "\n";
+        $content .= "MAIL_DRIVER=smtp\n";
+        $content .= "MAIL_HOST=smtp.mailtrap.io\n";
+        $content .= "MAIL_PORT=25\n";
+        $content .= "MAIL_USERNAME=\n";
+        $content .= "MAIL_PASSWORD=\n";
+        $content .= "MAIL_ENCRYPTION=tls\n";
+        $content .= "MAIL_FROM_ADDRESS=simplo@gmail.com\n";
+        $content .= "MAIL_FROM_NAME=simplocms\n";
+
+        fwrite($env, $content);
+        fclose($env);
     }
 }
 
@@ -321,5 +359,22 @@ class Admin
     public function getLogin()
     {
         return $this->login;
+    }
+}
+
+class CustomException
+{
+    private $message;
+
+    public function __construct($message)
+    {
+        $this->message = $message;
+    }
+
+    public function throw()
+    {
+        echo $this->message;
+        http_response_code(301);
+        exit;
     }
 }

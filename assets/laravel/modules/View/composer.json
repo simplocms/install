@@ -1,0 +1,24 @@
+{
+    "name": "admin-module/view",
+    "description": "Module pro přímé vkládání view do grideditoru s definovanými proměnnými.",
+    "authors": [
+        {
+            "name": "Simplo.cz",
+            "email": "info@simplo.cz"
+        },
+        {
+            "name": "Patrik Václavek",
+            "email": "vaclavek.patrik@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Modules\\View\\": ""
+        }
+    },
+    "system-change-track": {
+        "other": "1.0",
+        "grideditor": "1.0",
+        "config": "1.0"
+    }
+}

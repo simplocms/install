@@ -1,0 +1,25 @@
+{
+    "name": "admin-module/link",
+    "description": "Modul pro vkládání dynamických i statických odkazů na stránku.",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Simplo.cz",
+            "email": "info@simplo.cz"
+        },
+        {
+            "name": "Patrik Václavek",
+            "email": "vaclavek.patrik@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Modules\\Link\\": ""
+        }
+    },
+    "system-change-track": {
+        "other": "1.0",
+        "grideditor": "1.0",
+        "config": "1.0"
+    }
+}

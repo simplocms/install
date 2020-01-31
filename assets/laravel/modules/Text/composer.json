@@ -1,0 +1,24 @@
+{
+    "name": "admin-module/text",
+    "description": "Modul pro přímé vkládání textu/html do grideditoru.",
+    "authors": [
+        {
+            "name": "Simplo.cz",
+            "email": "info@simplo.cz"
+        },
+        {
+            "name": "Patrik Václavek",
+            "email": "vaclavek.patrik@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Modules\\Text\\": ""
+        }
+    },
+    "system-change-track": {
+        "other": "1.0",
+        "grideditor": "1.0",
+        "config": "1.0"
+    }
+}

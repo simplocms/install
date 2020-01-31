@@ -48,11 +48,7 @@
         <h5>Folder perms</h5>
         <div>
         <?php 
-        if (is_writable(__DIR__)) {
-            echo "Permissions are good";
-        } else {
-            echo "Permsissions are bad";
-        }
+            checkDirPermissions();
         ?>
         </div>
     </div>

@@ -1,0 +1,119 @@
+// Variables
+@import "../_variables.scss";
+// Bootstrap
+@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+// Font awesome
+@import "~font-awesome/css/font-awesome.min.css";
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  font-family: 'Roboto', Sans-Serif;
+}
+
+.index-content {
+  margin: 10px 25px;
+}
+
+.page-content, .component-content {
+  min-height: calc(100vh - 60px);
+
+  iframe {
+    min-width: 100%;
+    min-height: calc(100vh - 60px);
+    border: none;
+  }
+}
+
+.component-content {
+  > div:first-child, > div:first-child + div {
+    .ace_editor {
+      min-height: 45vh;
+      margin: 0;
+      background-color: #1D1E22;
+      border: 4px solid #36383F;
+      border-radius: 0;
+    }
+
+    width: 50%;
+    float: left;
+  }
+
+  > div:last-child {
+    border: 4px solid #36383F;
+    height: calc(75vh - 50px);
+    clear: both;
+
+    > iframe {
+      min-height: calc(75vh - 50px);
+    }
+  }
+
+  .ace_editor {
+
+  }
+}
+
+.navbar {
+  border-radius: 0;
+  position: relative;
+  border: 1px solid transparent;
+  margin-bottom: 0;
+  min-height: 45px;
+  padding: 0;
+  color: #ffffff;
+  background-color: #37474F;
+}
+
+.navbar-nav {
+  padding-left: 0;
+  list-style: none;
+  float: left;
+  margin: 0;
+  text-align: left;
+
+  &.right {
+    float: right;
+  }
+
+  > li {
+    position: relative;
+    display: block;
+    float: left;
+
+    > a, > a:hover, > a:active, > a:focus, &.info {
+      text-decoration: none;
+      outline: 0;
+      margin-bottom: 0;
+      text-align: center;
+      vertical-align: middle;
+      touch-action: manipulation;
+      cursor: pointer;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      user-select: none;
+      font-weight: normal;
+      background-color: transparent;
+      border-radius: 2px;
+      font-size: 13px;
+      box-shadow: none;
+      position: relative;
+      display: block;
+      padding: 12px 15px;
+      line-height: 18px;
+      color: #fff;
+    }
+
+    &.info {
+      cursor: default;
+    }
+
+    > a:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+      color: #fff;
+    }
+  }
+}

@@ -12,13 +12,13 @@ $(document).ready(function() {
         });
 
         $.ajax({
-            url: form.attr('action'),
-            method: form.attr('method'),
-            data: formData
+            url: window.location.pathname,
+            method: 'POST',
+            data: formData,
         }).done(function(data) {
-            dbResult.text(data);
+            dbResult.text('Connection successful');
         }).fail(function(data) {
-            dbResult.text(data);
+            dbResult.text(data.responseText);
         })
     });
 
@@ -43,19 +43,45 @@ $(document).ready(function() {
         errEl.html(html);
     });
 
-    $('#admin_password_confirm').on('input', function() {
-        let value = $(this).val();
-        let errEl = $('#adminPasswordConfirmError');
-
-        if (value !== $('#admin_password').val()) {
-            errEl.html('Passwords must be same');
-        } else {
-            errEl.html('');
-        }
-    });
-
     $('#adminButton').on('click', function(e) {
         e.preventDefault();
+
+        let i = 0;
+        let form = $('#dbForm');
+        let dbResult = $('#dbResult');
+        let formData = {};
+
+        $.each(form.serializeArray(), function() {
+            formData[this.name] = this.value;
+        });
+
+        $.ajax({
+            url: window.location.pathname,
+            method: 'POST',
+            data: {
+                install_app: true
+            }
+        }).done(function(data) {
+            console.log('file downloaded')
+        }).fail(function(file) {
+            console.log('error')
+        })
+
+        unzipData = formData;
+        unzipData['unzip_file'] = true;
+
+        $.ajax({
+            url: window.location.pathname,
+            method: 'POST',
+            data: unzipData
+        }).progress(function() {
+            console.log(progress + i)
+            i += 1;
+        }).done(function(data) {
+            console.log(data)
+        }).fail(function(data) {
+            console.log(data)
+        })
     })
 });
 </script>

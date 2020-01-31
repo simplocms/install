@@ -25,15 +25,11 @@ if (isset($_POST['db_type'])) {
         DbConnection::getInstance()->setPassword('');
     }
 
-    $connection = DbConnection::getInstance()->getConnection();
+    DbConnection::getInstance()->getConnection();
 
-    if ($connection instanceof PDO) {
-        echo 'Connection is succesfull';
-    } else {
-        echo $connection->getMessage();
+    if (! isset($_POST['unzip_file']) ) {
+        exit;
     }
-
-    exit;
 }
 
 if (isset($_POST['admin_first_name'])) {
@@ -57,5 +53,29 @@ if (isset($_POST['admin_first_name'])) {
         Admin::getInstance()->setPassword('');
     }
 
+    exit;
+}
+
+if (isset($_POST['install_app'])) {
+    file_put_contents("source.zip", fopen("https://www.simplocms.com/source.zip", 'r'));
+    exit;
+}
+
+if (isset($_POST['unzip_file'])) {
+    $zip = new ZipArchive;
+    if ($zip->open('source.zip') === TRUE) {
+        $zip->extractTo(__DIR__ . '/laravel');
+        $zip->close();
+        echo 'ok';
+    } else {
+        (new CustomException('Failed unziping source'))->throw();
+        exit;
+    }
+
+    DbConnection::getInstance()->writeEnv();
+    echo "file created\n";
+    
+    $shell = exec("cd assets/laravel && php artisan key:generate");
+    echo $shell;
     exit;
 }

@@ -1,0 +1,16 @@
+{
+    "name": "Image",
+    "alias": "image",
+    "description": "Module for including images to page via grideditor.",
+    "keywords": [],
+    "active": 1,
+    "order": 0,
+    "providers": [
+        "Modules\\Image\\Providers\\ImageServiceProvider"
+    ],
+    "aliases": {},
+    "files": [
+        "start.php"
+    ],
+    "requires": []
+}

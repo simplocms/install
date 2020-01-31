@@ -1,0 +1,49 @@
+@function strip-unit($number) {
+  @if type-of($number)=='number' and not unitless($number) {
+    @return $number / ($number * 0 + 1);
+  }
+
+  @return $number;
+}
+
+// xs, sm, md, lg, lx
+@mixin more-than($breakpoint) {
+
+  @each $breakpointName,
+    $breakpointPx in $grid-breakpoints {
+    @if $breakpoint==$breakpointName {
+      @media only screen and (min-width: #{ strip-unit($breakpointPx)/16}em) {
+        @content;
+      }
+    }
+  }
+}
+
+
+@mixin less-than($breakpoint) {
+
+  @each $breakpointName,
+    $breakpointPx in $grid-breakpoints {
+    @if $breakpoint==$breakpointName {
+      @media only screen and (max-width: #{ strip-unit($breakpointPx)/16}em) {
+        @content;
+      }
+    }
+  }
+}
+
+
+@mixin more-than-custom($breakpoint) {
+
+  @media only screen and (min-width: #{ strip-unit($breakpoint)/16}em) {
+    @content;
+  }
+}
+
+
+@mixin less-than-custom($breakpoint) {
+
+  @media only screen and (max-width: #{ strip-unit($breakpoint)/16}em) {
+    @content;
+  }
+}
