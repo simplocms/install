@@ -1,1 +1,0 @@
-{{ Html::script('https://www.google.com/recaptcha/api.js?hl=en', ['async', 'defer']) }}

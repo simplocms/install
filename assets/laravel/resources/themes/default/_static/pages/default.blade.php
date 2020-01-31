@@ -1,7 +1,0 @@
-@extends('theme::layouts.main')
-
-@section('content')
-   
-
-
-@endsection

@@ -1,6 +1,0 @@
-/node_modules
-/.idea
-composer.lock
-package-lock.json
-/.vscode
-npm-debug.log
