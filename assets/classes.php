@@ -144,21 +144,7 @@ class DbConnection
     }
 
     public function getConnection() {
-        $dsn = 'mysql';
-        switch ($this->driver) {
-            case 'MySQL':
-                $dsn = 'mysql';
-                break;
-            case 'PostgreSQL':
-                $dsn = 'pgsql';
-                break;
-            case 'SQLite':
-                $dsn = 'sqlite';
-                break;
-            case 'SQL Server':
-                $dsn = 'dblib';
-                break;
-        }
+        $dsn = $this->getDsn();
 
         $connection = $dsn . ':host=' . $this->host;
         if ($this->port) {
@@ -188,7 +174,6 @@ class DbConnection
             (new CustomException('Unknowkn database driver ' . $this->driver))->throw();
         }
 
-        $tableExists = false;
         while ($rows->fetch()) {
             (new CustomException('Database ' . $this->dbName . ' is not empty!'))->throw();
         }
@@ -256,22 +241,26 @@ class DbConnection
 
     public function writeEnv()
     {
-        $env = fopen(__DIR__ . '/laravel/.env', "w");
+        $env = fopen('.env', "w");
         if (! $env) {
             (new CustomException("Unable to open file .env"))->throw();
         }
 
         $content = "APP_NAME=simplocms\n";
-        $content .= "APP_ENV=production\n";
-        $content .= "APP_DEBUG=false\n";
+        $content .= "APP_ENV=local\n";
+        $content .= "APP_DEBUG=true\n";
+        $content .= "APP_LOG_LEVEL=debug\n";
         $content .= "APP_URL=http://localhost\n";
+        $content .= "APP_KEY=\n";
         $content .= "\n";
-        $content .= "DB_CONNECTION=" . $this->driver . "\n";
+        $content .= "DB_CONNECTION=" . $this->getDsn() . "\n";
         $content .= "DB_HOST=" . $this->host . "\n";
         $content .= "DB_PORT=" . $this->port . "\n";
         $content .= "DB_DATABASE=" . $this->dbName . "\n";
         $content .= "DB_USERNAME=" . $this->user . "\n";
         $content .= "DB_PASSWORD=" . $this->password . "\n";
+        $content .= "\n";
+        $content .= "TESTING_DB_DATABASE=simplo_cms_testing\n";
         $content .= "\n";
         $content .= "MAIL_DRIVER=smtp\n";
         $content .= "MAIL_HOST=smtp.mailtrap.io\n";
@@ -281,9 +270,33 @@ class DbConnection
         $content .= "MAIL_ENCRYPTION=tls\n";
         $content .= "MAIL_FROM_ADDRESS=simplo@gmail.com\n";
         $content .= "MAIL_FROM_NAME=simplocms\n";
+        $content .= "\n";
+        $content .= "DEFAULT_LOCALE=cs\n";
+        $content .= "ENABLED_LOCALES=cs,en\n";
 
         fwrite($env, $content);
         fclose($env);
+    }
+
+    public function getDsn()
+    {
+        $dsn = 'mysql';
+        switch ($this->driver) {
+            case 'MySQL':
+                $dsn = 'mysql';
+                break;
+            case 'PostgreSQL':
+                $dsn = 'pgsql';
+                break;
+            case 'SQLite':
+                $dsn = 'sqlite';
+                break;
+            case 'SQL Server':
+                $dsn = 'dblib';
+                break;
+        }
+
+        return $dsn;
     }
 }
 

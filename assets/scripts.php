@@ -1,21 +1,20 @@
 <script>
 $(document).ready(function() {
+    var dbFormData = {};
+    
     $('#dbButton').on('click', function($e) {
         $e.preventDefault();
 
-        let form = $('#dbForm');
-        let dbResult = $('#dbResult');
-        let formData = {};
+        var form = $('#dbForm');
+        var dbResult = $('#dbResult');
+        dbFormData = {};
 
         $.each(form.serializeArray(), function() {
-            formData[this.name] = this.value;
+            dbFormData[this.name] = this.value;
         });
 
-        $.ajax({
-            url: window.location.pathname,
-            method: 'POST',
-            data: formData,
-        }).done(function(data) {
+        sendRequest(dbFormData, true)
+        .done(function(data) {
             dbResult.text('Connection successful');
         }).fail(function(data) {
             dbResult.text(data.responseText);
@@ -46,42 +45,64 @@ $(document).ready(function() {
     $('#adminButton').on('click', function(e) {
         e.preventDefault();
 
-        let i = 0;
-        let form = $('#dbForm');
-        let dbResult = $('#dbResult');
-        let formData = {};
+        var i = 0;
+        var form = $('#dbForm');
+        var dbResult = $('#dbResult');
+        var formData = {};
 
         $.each(form.serializeArray(), function() {
             formData[this.name] = this.value;
         });
 
-        $.ajax({
-            url: window.location.pathname,
-            method: 'POST',
-            data: {
-                install_app: true
-            }
-        }).done(function(data) {
-            console.log('file downloaded')
-        }).fail(function(file) {
-            console.log('error')
-        })
-
         unzipData = formData;
         unzipData['unzip_file'] = true;
 
-        $.ajax({
-            url: window.location.pathname,
-            method: 'POST',
-            data: unzipData
-        }).progress(function() {
-            console.log(progress + i)
-            i += 1;
-        }).done(function(data) {
+        sendRequest(unzipData, false)
+        .done(function(data) {
+            console.log(data)
+        }).fail(function(data) {
+            console.log(data)
+        })
+
+        sendRequest({composer: true}, false)
+        .done(function(data) {
+            console.log(data)
+        }).fail(function(data) {
+            console.log(data)
+        })
+
+        sendRequest({migrate: true}, false)
+        .done(function(data) {
+            console.log(data);
+            sendRequest({db_seed: true}, false)
+            .done(function(data) {
+                console.log(data)
+            }).fail(function(data) {
+                console.log(data)
+            })
+        }).fail(function(data) {
+            console.log(data)
+        })
+
+        sendRequest({install_npm: true}, false, function() {
+            console.log("installing npm");
+        })
+        .done(function(data) {
             console.log(data)
         }).fail(function(data) {
             console.log(data)
         })
     })
 });
+
+function sendRequest(sendData, sendAsync, sendBeforeSend = null)
+{
+    return $.ajax({
+        url: window.location.pathname,
+        method: 'POST',
+        data: sendData,
+        async: sendAsync,
+        beforeSend: sendBeforeSend
+    });
+}
 </script>

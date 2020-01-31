@@ -38,3 +38,10 @@ function checkDirPermissions()
         echo "Permsissions are bad";
     }
 }
+
+function execute($exec)
+{
+    exec($exec . " 2>log.txt | sed 's/\x1b\[[0-9;]*m//g'", $output, $code);
+
+    return $code;
+}

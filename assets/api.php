@@ -56,26 +56,57 @@ if (isset($_POST['admin_first_name'])) {
     exit;
 }
 
-if (isset($_POST['install_app'])) {
-    file_put_contents("source.zip", fopen("https://www.simplocms.com/source.zip", 'r'));
-    exit;
-}
-
 if (isset($_POST['unzip_file'])) {
+    file_put_contents("source.zip", fopen("https://www.simplocms.com/source.zip", 'r'));
+    
     $zip = new ZipArchive;
     if ($zip->open('source.zip') === TRUE) {
-        $zip->extractTo(__DIR__ . '/laravel');
+        $zip->extractTo($_SERVER['DOCUMENT_ROOT']);
         $zip->close();
-        echo 'ok';
+
+        unlink('source.zip');
+
+        echo "Unziped\n";
     } else {
         (new CustomException('Failed unziping source'))->throw();
-        exit;
     }
 
     DbConnection::getInstance()->writeEnv();
-    echo "file created\n";
-    
-    $shell = exec("cd assets/laravel && php artisan key:generate");
+    echo "Env created\n";
+    exit;
+}
+
+if (isset($_POST['composer'])) {
+    execute("composer install");
+    echo "composer installed\n";
+
+    $shell = execute("php artisan key:generate");
     echo $shell;
+    exit;
+}
+
+if (isset($_POST['migrate'])) {
+    execute("php artisan migrate");
+    echo "database migrated \n";
+    exit;
+}
+
+if (isset($_POST['db_seed'])) {
+    execute("php artisan db:seed");
+    echo "database seeded\n";
+    exit;
+}
+
+if (isset($_POST['install_npm'])) {
+    $os = explode('', trim(php_uname()))[0];
+
+    if (strtolower($os) === 'windows') {
+        execute("npm install --no-bin-links");
+    } else {
+        execute("npm install");
+    }
+
+    execute("npm run prod");
+    echo "npm installed\n";
     exit;
 }
