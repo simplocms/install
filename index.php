@@ -87,6 +87,7 @@
             </div>
         </div>
 
+        <a href="/" class="btn btn-info">Check again</a>
         <button class="btn btn-info btn-next" <?php if (! $canContinue) echo 'disabled'?> data-next='2'>Next</button>
     </div>
 
@@ -139,6 +140,7 @@
             </form>
         </div>
 
+        <button class="btn btn-info btn-prev" data-next='1'>Prev</button>
         <button class="btn btn-info btn-next" data-next='3' disabled>Next</button>
     </div>
 
@@ -149,21 +151,25 @@
                 <div class="form-group">
                     <label for="admin_first_name">First name</label>
                     <input type="text" class="form-control" name="admin_first_name" id="admin_first_name" value="<?php echo Admin::getInstance()->getFirstName() ?>">
+                    <span class="error"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="admin_last_name">Last name</label>
                     <input type="text" class="form-control" name="admin_last_name" id="admin_last_name" value="<?php echo Admin::getInstance()->getLastName() ?>">
+                    <span class="error"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="admin_email">E-mail</label>
                     <input type="email" class="form-control" name="admin_email" id="admin_email" value="<?php echo Admin::getInstance()->getEmail() ?>">
+                    <span class="error"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="admin_login">Login</label>
                     <input type="text" class="form-control" name="admin_login" id="admin_login" value="<?php echo Admin::getInstance()->getLogin() ?>">
+                    <span class="error"></span>
                 </div>
 
                 <div class="form-group">
@@ -177,8 +183,10 @@
                     <input type="password" class="form-control" name="admin_password_confirm" id="admin_password_confirm" value="<?php echo Admin::getInstance()->getPassword() ?>">
                     <span id="adminPasswordConfirmError"></span>
                 </div>
-
-                <button class="btn btn-info" id="adminButton">Install</button>
+                
+                <button class="btn btn-info btn-prev" data-next='2'>Prev</button>
+                <button class="btn btn-info" id="installButton">Install</button>
+                <div class="d-inline-block" id="adminErr"></div>
             </form>
         </div>
     </div>

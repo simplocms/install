@@ -24,30 +24,34 @@ $(document).ready(function() {
     });
 
     $('#admin_password').on('input', function() {
-        let value = $(this).val();
-        let errEl = $('#adminPasswordError');
-        let html = '';
-
-        if (! value) {
-            errEl.html(html);
-            return;
-        }
-
-        if (value.toLowerCase() == value) {
-            html += 'Need at least one upper case letter<br>';
-        }
-
-        if (value.toUpperCase() == value) {
-            html += 'Need at least one lower case letter<br>';
-        }
-
-        errEl.html(html);
+        checkAdminPassword($(this));
     });
 
-    $('#adminButton').on('click', function(e) {
+    $('#admin_first_name').on('input', function() {
+        checkName($(this));
+    });
+
+    $('#admin_last_name').on('input', function() {
+        checkName($(this));
+    });
+
+    $('#admin_login').on('input', function() {
+        checkName($(this));
+    });
+
+    $('#admin_email').on('input', function() {
+        checkEmail($(this));
+    });
+
+    // check user and install
+    $('#installButton').on('click', function(e) {
         e.preventDefault();
 
         var i = 0;
+
+        if (! checkAdminSection()) {
+            return;
+        }
 
         var form = $('#dbForm');
         var formData = {};
@@ -98,8 +102,15 @@ $(document).ready(function() {
         })
     });
 
-    $('.btn-next').click(function () {
+    $('.btn-next').click(function (e) {
+        e.preventDefault();
         hideEl($('#tab-' + step++));
+        showEl($('#tab-' + step));
+    });
+
+    $('.btn-prev').click(function (e) {
+        e.preventDefault();
+        hideEl($('#tab-' + step--));
         showEl($('#tab-' + step));
     });
 });
@@ -123,4 +134,82 @@ function hideEl(el) {
 function showEl(el) {
     el.removeClass('d-none');
     el.addClass('show');
+}
+
+function checkAdminSection()
+{
+    var err = false;
+    
+    checkName($('#admin_first_name'));
+    checkName($('#admin_last_name'));
+    checkName($('#admin_login'));
+    checkEmail($('#admin_email'));
+    checkAdminPassword($('#admin_password'));
+    checkPasswordConfirm($('#admin_password_confirm'));
+
+    return ! err;
+}
+
+function checkName(el)
+{
+    if (! el.val().length) {
+        el.siblings('.error').html('First name is required');
+        return false;
+    } else {
+        el.siblings('.error').html('');
+        return true;
+    }
+}
+
+function checkEmail(el)
+{
+    var err = false;
+    if (! /[^\@]+\@[^\@]+\.[\w]+/.test(el.val())) {
+        el.siblings('.error').html('Hodnota můsí odpovídat emailu');
+        return false;
+    } else {
+        el.siblings('.error').html('');
+        return true;
+    }
+}
+
+function checkAdminPassword(el)
+{
+    var pwdErr = false;
+    var pwdValue = el.val();
+    var html = '';
+
+    if (el.val().length < 6) {
+        html += 'Need at least 6 characters<br>';
+        pwdErr = true;
+    }
+
+    if (pwdValue.toLowerCase() == pwdValue) {
+        html += 'Need at least one upper case letter<br>';
+        pwdErr = true;
+    }
+
+    if (pwdValue.toUpperCase() == pwdValue) {
+        html += 'Need at least one lower case letter<br>';
+        pwdErr = true;
+    }
+
+    if (pwdErr) {
+        $('#adminPasswordError').html(html);
+        return false;
+    } else {
+        $('#adminPasswordError').html('');
+        return true;
+    }
+}
+
+function checkPasswordConfirm(el)
+{
+    if ($('#admin_password').val() != el.val()) {
+        $('#adminPasswordConfirmError').html('Heslá musia byť rovnaké');
+        return false;
+    } else {
+        $('#adminPasswordConfirmError').html('');
+        return true;
+    }
 }

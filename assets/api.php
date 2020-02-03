@@ -1,26 +1,26 @@
 <?php
 
 if (isset($_POST['db_type'])) {
-    DbConnection::getInstance()->setDriver($_POST['db_type']);
+    DbConnection::getInstance()->setDriver(filter_var($_POST['db_type'], FILTER_SANITIZE_STRING));
 
     if (isset($_POST['db_host'])) {
-        DbConnection::getInstance()->setHost($_POST['db_host']);
+        DbConnection::getInstance()->setHost(filter_var($_POST['db_host'], FILTER_SANITIZE_STRING));
     }
 
     if (isset($_POST['db_port'])) {
-        DbConnection::getInstance()->setPort($_POST['db_port']);
+        DbConnection::getInstance()->setPort(filter_var($_POST['db_port'], FILTER_SANITIZE_STRING));
     }
 
     if (isset($_POST['db_name'])) {
-        DbConnection::getInstance()->setDbName($_POST['db_name']);
+        DbConnection::getInstance()->setDbName(filter_var($_POST['db_name'], FILTER_SANITIZE_STRING));
     }
 
     if (isset($_POST['db_user'])) {
-        DbConnection::getInstance()->setUser($_POST['db_user']);
+        DbConnection::getInstance()->setUser(filter_var($_POST['db_user'], FILTER_SANITIZE_STRING));
     }
 
     if (isset($_POST['db_password'])) {
-        DbConnection::getInstance()->setPassword($_POST['db_password']);
+        DbConnection::getInstance()->setPassword(filter_var($_POST['db_password'], FILTER_SANITIZE_STRING));
     } else {
         DbConnection::getInstance()->setPassword('');
     }
@@ -33,18 +33,18 @@ if (isset($_POST['db_type'])) {
 }
 
 if (isset($_POST['admin_first_name'])) {
-    Admin::getInstance()->setFirstName($_POST['admin_first_name']);
+    Admin::getInstance()->setFirstName(trim(filter_var($_POST['admin_first_name'], FILTER_SANITIZE_STRING)));
 
     if (isset($_POST['admin_last_name'])) {
-        Admin::getInstance()->setLastName($_POST['admin_last_name']);
+        Admin::getInstance()->setLastName(trim(filter_var($_POST['admin_last_name'], FILTER_SANITIZE_STRING)));
     }
 
     if (isset($_POST['admin_email'])) {
-        Admin::getInstance()->setEmail($_POST['admin_email']);
+        Admin::getInstance()->setEmail(trim(filter_var($_POST['admin_email'], FILTER_SANITIZE_EMAIL)));
     }
 
     if (isset($_POST['admin_login'])) {
-        Admin::getInstance()->setLogin($_POST['admin_login']);
+        Admin::getInstance()->setLogin(trim(filter_var($_POST['admin_login'], FILTER_SANITIZE_STRING)));
     }
 
     if (isset($_POST['admin_password'])) {
@@ -54,7 +54,7 @@ if (isset($_POST['admin_first_name'])) {
     }
 
     if (! isset($_POST['store_admin'])) {
-        echo "a";
+        echo "Admin creditentials are good";
         exit;
     }
 }
@@ -75,16 +75,13 @@ if (isset($_POST['unzip_file'])) {
     }
 
     DbConnection::getInstance()->writeEnv();
+
+    if (execute("php artisan key:generate")) {
+        //error
+        (new CustomException("Couldn't create .env file."));
+    }
+
     echo "Env created\n";
-    exit;
-}
-
-if (isset($_POST['composer'])) {
-    execute("composer install");
-    echo "composer installed\n";
-
-    $shell = execute("php artisan key:generate");
-    echo $shell;
     exit;
 }
 
