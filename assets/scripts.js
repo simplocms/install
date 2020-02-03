@@ -138,22 +138,29 @@ function showEl(el) {
 
 function checkAdminSection()
 {
+    var isGood = true;
     var err = false;
-    
-    checkName($('#admin_first_name'));
-    checkName($('#admin_last_name'));
-    checkName($('#admin_login'));
-    checkEmail($('#admin_email'));
-    checkAdminPassword($('#admin_password'));
-    checkPasswordConfirm($('#admin_password_confirm'));
+
+    isGood = checkName($('#admin_first_name'));
+    err = err ? err : isGood;
+    isGood = checkName($('#admin_last_name'));
+    err = err ? err : isGood;
+    isGood = checkName($('#admin_login'));
+    err = err ? err : isGood;
+    isGood = checkEmail($('#admin_email'));
+    err = err ? err : isGood;
+    isGood = checkAdminPassword($('#admin_password'));
+    err = err ? err : isGood;
+    isGood = checkPasswordConfirm($('#admin_password_confirm'));
+    err = err ? err : isGood;
 
     return ! err;
 }
 
 function checkName(el)
 {
-    if (! el.val().length) {
-        el.siblings('.error').html('First name is required');
+    if (! el.val().length < 3) {
+        el.siblings('.error').html('Field requires at least 3 characters');
         return false;
     } else {
         el.siblings('.error').html('');
@@ -165,7 +172,7 @@ function checkEmail(el)
 {
     var err = false;
     if (! /[^\@]+\@[^\@]+\.[\w]+/.test(el.val())) {
-        el.siblings('.error').html('Hodnota můsí odpovídat emailu');
+        el.siblings('.error').html('Hodnota musí odpovídat emailu');
         return false;
     } else {
         el.siblings('.error').html('');
@@ -180,17 +187,17 @@ function checkAdminPassword(el)
     var html = '';
 
     if (el.val().length < 6) {
-        html += 'Need at least 6 characters<br>';
+        html += 'Field requires at least 6 characters<br>';
         pwdErr = true;
     }
 
     if (pwdValue.toLowerCase() == pwdValue) {
-        html += 'Need at least one upper case letter<br>';
+        html += 'Field requires at least one upper case letter<br>';
         pwdErr = true;
     }
 
     if (pwdValue.toUpperCase() == pwdValue) {
-        html += 'Need at least one lower case letter<br>';
+        html += 'Field requires at least one lower case letter<br>';
         pwdErr = true;
     }
 
