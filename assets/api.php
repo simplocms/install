@@ -25,9 +25,9 @@ if (isset($_POST['db_type'])) {
         DbConnection::getInstance()->setPassword('');
     }
 
-    DbConnection::getInstance()->getConnection();
+    DbConnection::getInstance()->checkConnection(! isset($_POST['store_admin']));
 
-    if (! isset($_POST['unzip_file']) ) {
+    if (! isset($_POST['unzip_file']) && ! isset($_POST['store_admin'])) {
         exit;
     }
 }
@@ -53,7 +53,10 @@ if (isset($_POST['admin_first_name'])) {
         Admin::getInstance()->setPassword('');
     }
 
-    exit;
+    if (! isset($_POST['store_admin'])) {
+        echo "a";
+        exit;
+    }
 }
 
 if (isset($_POST['unzip_file'])) {
@@ -86,27 +89,28 @@ if (isset($_POST['composer'])) {
 }
 
 if (isset($_POST['migrate'])) {
-    execute("php artisan migrate");
-    echo "database migrated \n";
+    if (execute("php artisan migrate")) {
+        //error
+        (new CustomException("Couldn't migrate database, check .env file."));
+    }
+
+    echo "Database succesfully migrated\n";
     exit;
 }
 
 if (isset($_POST['db_seed'])) {
-    execute("php artisan db:seed");
-    echo "database seeded\n";
+    if (execute("php artisan db:seed")) {
+        //error
+        (new CustomException("Couldn't seed database, check .env file."));
+    }
+
+    echo "Database succesfully seeded\n";
     exit;
 }
 
-if (isset($_POST['install_npm'])) {
-    $os = explode('', trim(php_uname()))[0];
+if (isset($_POST['store_admin'])) {
+    Admin::getInstance()->store();
 
-    if (strtolower($os) === 'windows') {
-        execute("npm install --no-bin-links");
-    } else {
-        execute("npm install");
-    }
-
-    execute("npm run prod");
-    echo "npm installed\n";
+    echo "connected";
     exit;
 }

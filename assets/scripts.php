@@ -46,15 +46,25 @@ $(document).ready(function() {
         e.preventDefault();
 
         var i = 0;
+
         var form = $('#dbForm');
-        var dbResult = $('#dbResult');
         var formData = {};
 
         $.each(form.serializeArray(), function() {
             formData[this.name] = this.value;
         });
 
-        unzipData = formData;
+        var adminForm = $('#adminForm');
+        var adminData = {};
+
+        $.each(adminForm.serializeArray(), function() {
+            adminData[this.name] = this.value;
+        });
+
+        var storeAdminData = $.extend({}, adminData, formData);
+        storeAdminData['store_admin'] = true;
+
+        var unzipData = $.extend({}, {}, formData);
         unzipData['unzip_file'] = true;
 
         sendRequest(unzipData, false)
@@ -64,29 +74,21 @@ $(document).ready(function() {
             console.log(data)
         })
 
-        sendRequest({composer: true}, false)
-        .done(function(data) {
-            console.log(data)
-        }).fail(function(data) {
-            console.log(data)
-        })
-
         sendRequest({migrate: true}, false)
         .done(function(data) {
             console.log(data);
-            sendRequest({db_seed: true}, false)
-            .done(function(data) {
-                console.log(data)
-            }).fail(function(data) {
-                console.log(data)
-            })
         }).fail(function(data) {
             console.log(data)
         })
 
-        sendRequest({install_npm: true}, false, function() {
-            console.log("installing npm");
+        sendRequest({db_seed: true}, false)
+        .done(function(data) {
+            console.log(data)
+        }).fail(function(data) {
+            console.log(data)
         })
+
+        sendRequest(storeAdminData, false)
         .done(function(data) {
             console.log(data)
         }).fail(function(data) {

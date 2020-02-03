@@ -143,7 +143,8 @@ class DbConnection
         return self::$instance;
     }
 
-    public function getConnection() {
+    public function getConnection()
+    {
         $dsn = $this->getDsn();
 
         $connection = $dsn . ':host=' . $this->host;
@@ -154,9 +155,18 @@ class DbConnection
         $connection .= ';dbname=' . $this->dbName;
 
         try {
-            $pdo = new PDO($connection, $this->user, $this->password ?: null);
+            return new PDO($connection, $this->user, $this->password ?: null);
         } catch (PDOException $e) {
             (new CustomException($e->getMessage()))->throw();            
+        }
+    }
+
+    public function checkConnection($withEmpty = true)
+    {
+        $pdo = $this->getConnection();
+
+        if (! $withEmpty) {
+            return;
         }
 
         // empty database
@@ -322,6 +332,52 @@ class Admin
         }
 
         return self::$instance;
+    }
+
+    public function store()
+    {
+        try {
+            $pdo = DbConnection::getInstance()->getConnection();
+
+            // set err mode to exception
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $pwd = password_hash($this->password, PASSWORD_BCRYPT);
+
+            $stmt = $pdo->prepare("SELECT id, name FROM roles WHERE name='administrator'");
+            $stmt->execute();
+
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    
+            foreach(new RecursiveArrayIterator($stmt->fetchAll()) as $k=>$v) {
+                $roleId = $v['id'];
+                // only first result if there are more
+                break;
+            }
+
+            if (! isset($roleId)) {
+                throw new PDOException('Failed to create admin user, check your database connection.');
+            }
+
+            $now = date('Y-m-d H:i:s');
+
+            // begin the transaction
+            $pdo->beginTransaction();
+            // sql statements
+            $sql = "INSERT INTO users (username, firstname, lastname, email, enabled, password, protected, created_at, updated_at, locale)
+            VALUES ('$this->login', '$this->firstName', '$this->lastName', '$this->email', TRUE, '$pwd', TRUE, '$now', '$now', 'cs')";
+            $pdo->exec($sql);
+            $lastId = $pdo->lastInsertId();
+            $pdo->exec("INSERT INTO role_user (user_id, role_id)
+            VALUES ($lastId, 2)");
+            $pdo->commit();
+
+
+        } catch (PDOException $e) {
+            (new CustomException($e->getMessage()))->throw();
+        }
+
+        // $pdo = null;
     }
 
     public function setFirstName(string $firstName)

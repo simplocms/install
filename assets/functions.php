@@ -41,7 +41,7 @@ function checkDirPermissions()
 
 function execute($exec)
 {
-    exec($exec . " 2>log.txt | sed 's/\x1b\[[0-9;]*m//g'", $output, $code);
+    exec($exec . " -q 2>&1 --no-ansi", $output, $code);
 
     return $code;
 }
