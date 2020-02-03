@@ -1,0 +1,1 @@
+./babel/node_modules/.bin/babel assets/jquery.js assets/scripts.js -o assets/vendorsc.js --minified

@@ -30,13 +30,9 @@ function checkMysqlVersion(int $versionNumReq = 5600): bool
     }
 }
 
-function checkDirPermissions()
+function checkDirPermissions(): bool
 {
-    if (is_writable(__DIR__)) {
-        echo "Permissions are good";
-    } else {
-        echo "Permsissions are bad";
-    }
+    return is_writable(__DIR__);
 }
 
 function execute($exec)

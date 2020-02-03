@@ -11,8 +11,8 @@
     <title>Simplo cms installer</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-    <?php include 'assets/styles.php'; ?>
+    
+    <style><?php include 'assets/styles.css'; ?></style>
 </head>
 <body>
     <div class="bg-info text-primary text-center py-5">
@@ -23,58 +23,74 @@
         </div>
     </div>
 
-    <div class="container">
-        <h5>
-            X System requirements
-        </h5>
-        <div>
-            <ul>
-                <?php 
-                    foreach (Requirements::ITEMS as $key => $label) {
-                ?>
-                        <li>
-                <?php
-                            Requirements::checkRequirement($key, $label);
-                ?>
-                        </li>
-                <?php
-                    }
-                ?>
-            </ul>
+    <div class="container show tab" id="tab-1">
+        <div class="container">
+            <h5>
+                X System requirements
+            </h5>
+            <div>
+                <ul>
+                    <?php
+                        $canContinue = true;
+                        foreach (Requirements::ITEMS as $key => $label) {
+                    ?>
+                            <li>
+                    <?php
+                                $req = Requirements::checkRequirement($key, $label);
+                                echo $label . '  -->   ' . $req;
+
+                                if ($canContinue) {
+                                    $canContinue = $req;
+                                }
+                    ?>
+                            </li>
+                    <?php
+                        }
+                    ?>
+                </ul>
+            </div>
         </div>
+
+        <div class="container">
+            <h5>Folder perms</h5>
+            <div>
+            <?php 
+                if ($perm = checkDirPermissions()) {
+                    echo 'Permissions are good';
+                } else {
+                    $canContinue = $perm;
+                    echo 'Permissions are bad';
+                }
+            ?>
+            </div>
+        </div>
+
+        <div class="container">
+            <h5>
+                Optional packages
+            </h5>
+            <div>
+                <ul>
+                    <?php 
+                        foreach (Optional::ITEMS as $key => $label) {
+                    ?>
+                            <li>
+                    <?php
+                                $req = Optional::checkRequirement($key, $label);
+                                echo $label . '  -->   ' . $req;
+                    ?>
+                            </li>
+                    <?php
+                        }
+                    ?>
+                </ul>
+            </div>
+        </div>
+
+        <button class="btn btn-info btn-next" <?php if (! $canContinue) echo 'disabled'?> data-next='2'>Next</button>
     </div>
 
-    <div class="container">
-        <h5>Folder perms</h5>
-        <div>
-        <?php 
-            checkDirPermissions();
-        ?>
-        </div>
-    </div>
-
-    <div class="container">
-        <h5>
-            Optional packages
-        </h5>
-        <div>
-            <ul>
-                <?php 
-                    foreach (Optional::ITEMS as $key => $label) {
-                ?>
-                        <li>
-                <?php
-                            Optional::checkRequirement($key, $label);
-                ?>
-                        </li>
-                <?php
-                    }
-                ?>
-            </ul>
-        </div>
-    </div>
-
-    <div class="container">
+    <div class="container d-none tab" id="tab-2">
         <h5>Database</h5>
         <div class="p-4 card">
             <form action="index.php" method="POST" id="dbForm">
@@ -122,9 +138,11 @@
                 <span id="dbResult"></span>
             </form>
         </div>
+
+        <button class="btn btn-info btn-next" data-next='3' disabled>Next</button>
     </div>
 
-    <div class="container">
+    <div class="container d-none tab" id="tab-3">
         <h5>Administrator</h5>
         <div class="p-4 card">
             <form action="index.php" method="POST" id="adminForm">
@@ -166,6 +184,8 @@
     </div>
 </body>
 
-<?php include 'assets/scripts.php' ?>
+<script>
+<?php include 'assets/vendorsc.js' ?>
+</script>
 </html>
 <?php

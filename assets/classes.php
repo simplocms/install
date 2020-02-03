@@ -18,7 +18,7 @@ class Requirements
         'zip' => 'ZipArchive PHP Library is required'
     ];
 
-    public static function checkRequirement(string $ext, string $label)
+    public static function checkRequirement(string $ext, string $label): bool
     {
         $exists = false; 
         switch ($ext) {
@@ -63,7 +63,7 @@ class Requirements
                 break;
         }
 
-        echo $label . '  -->   ' . $exists;
+        return $exists;
     }
 }
 
@@ -78,7 +78,7 @@ class Optional
         'gif' => 'Gifsicle'
     ];
 
-    public static function checkRequirement(string $module, string $label)
+    public static function checkRequirement(string $module, string $label): bool
     {
         $exists = false;
         switch ($module) {
@@ -107,7 +107,7 @@ class Optional
                 break;
         }
     
-        echo $label . '  -->   ' . $exists;
+        return $exists;
     }
 }
 

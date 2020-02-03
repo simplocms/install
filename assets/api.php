@@ -111,6 +111,6 @@ if (isset($_POST['db_seed'])) {
 if (isset($_POST['store_admin'])) {
     Admin::getInstance()->store();
 
-    echo "connected";
+    echo "Admin user created, ready to use.";
     exit;
 }
