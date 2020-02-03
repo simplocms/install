@@ -50,9 +50,11 @@ $(document).ready(function() {
         var i = 0;
 
         if (! checkAdminSection()) {
+            console.log('bad');
             return;
-        }
+        }        
 
+        var msgEl = $('#installMessages');
         var form = $('#dbForm');
         var formData = {};
 
@@ -73,30 +75,33 @@ $(document).ready(function() {
         var unzipData = $.extend({}, {}, formData);
         unzipData['unzip_file'] = true;
 
-        sendRequest(unzipData, false)
+        sendRequest(unzipData, false, function () {
+            hideEl($('#tab-' + step++));
+            showEl($('#tab-' + step));
+        })
         .done(function(data) {
-            console.log(data)
+            $('#installMessages').append(data + '<br>');
         }).fail(function(data) {
             console.log(data)
         })
 
         sendRequest({migrate: true}, false)
         .done(function(data) {
-            console.log(data);
+            $('#installMessages').append(data + '<br>');
         }).fail(function(data) {
             console.log(data)
         })
 
         sendRequest({db_seed: true}, false)
         .done(function(data) {
-            console.log(data)
+            $('#installMessages').append(data + '<br>');
         }).fail(function(data) {
             console.log(data)
         })
 
         sendRequest(storeAdminData, false)
         .done(function(data) {
-            console.log(data)
+            $('#installMessages').append(data + '<br>');
         }).fail(function(data) {
             console.log(data)
         })
@@ -142,24 +147,24 @@ function checkAdminSection()
     var err = false;
 
     isGood = checkName($('#admin_first_name'));
-    err = err ? err : isGood;
+    err = err ? err : ! isGood;
     isGood = checkName($('#admin_last_name'));
-    err = err ? err : isGood;
+    err = err ? err : ! isGood;
     isGood = checkName($('#admin_login'));
-    err = err ? err : isGood;
+    err = err ? err : ! isGood;
     isGood = checkEmail($('#admin_email'));
-    err = err ? err : isGood;
+    err = err ? err : ! isGood;
     isGood = checkAdminPassword($('#admin_password'));
-    err = err ? err : isGood;
+    err = err ? err : ! isGood;
     isGood = checkPasswordConfirm($('#admin_password_confirm'));
-    err = err ? err : isGood;
+    err = err ? err : ! isGood;
 
     return ! err;
 }
 
 function checkName(el)
 {
-    if (! el.val().length < 3) {
+    if (el.val().length < 3) {
         el.siblings('.error').html('Field requires at least 3 characters');
         return false;
     } else {

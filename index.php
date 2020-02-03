@@ -190,6 +190,11 @@
             </form>
         </div>
     </div>
+
+    <div class="contianer" id="tab-4">
+        <div id="installMessages">
+        </div>
+    </div>
 </body>
 
 <script>
