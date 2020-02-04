@@ -108,3 +108,23 @@ if (isset($_POST['store_admin'])) {
 
     (new CustomException('Admin user created, ready to use.', 200))->throw();
 }
+
+if (isset($_POST['ob_check'])) {
+    $exists = Requirements::checkRequirement($_POST['ob_check']);
+
+    if ($exists) {
+        (new CustomException('existuje', 200))->throw();
+    } else {
+        (new CustomException('neexistuje', 200))->throw();
+    }
+}
+
+if (isset($_POST['op_check'])) {
+    $exists = Optional::checkRequirement($_POST['op_check']);
+
+    if ($exists) {
+        (new CustomException('existuje', 200))->throw();
+    } else {
+        (new CustomException('neexistuje', 200))->throw();
+    }
+}

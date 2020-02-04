@@ -29,24 +29,7 @@
                 X System requirements
             </h5>
             <div>
-                <ul>
-                    <?php
-                        $canContinue = true;
-                        foreach (Requirements::ITEMS as $key => $label) {
-                    ?>
-                            <li>
-                    <?php
-                                $req = Requirements::checkRequirement($key, $label);
-                                echo $label . '  -->   ' . $req;
-
-                                if ($canContinue) {
-                                    $canContinue = $req;
-                                }
-                    ?>
-                            </li>
-                    <?php
-                        }
-                    ?>
+                <ul id="obReq">
                 </ul>
             </div>
         </div>
@@ -70,25 +53,13 @@
                 Optional packages
             </h5>
             <div>
-                <ul>
-                    <?php 
-                        foreach (Optional::ITEMS as $key => $label) {
-                    ?>
-                            <li>
-                    <?php
-                                $req = Optional::checkRequirement($key, $label);
-                                echo $label . '  -->   ' . $req;
-                    ?>
-                            </li>
-                    <?php
-                        }
-                    ?>
+                <ul id="opReq">
                 </ul>
             </div>
         </div>
 
-        <a href="/" class="btn btn-info">Check again</a>
-        <button class="btn btn-info btn-next" <?php if (! $canContinue) echo 'disabled'?> data-next='2'>Next</button>
+        <button class="btn btn-info" id="reqBtnCheck" onclick="checkRequirements()">Check again</buton>
+        <button class="btn btn-info btn-next" <?php if (! $canContinue) echo 'disabled'?> id="reqBtnNext" data-next='2'>Next</button>
     </div>
 
     <div class="container d-none tab" id="tab-2">

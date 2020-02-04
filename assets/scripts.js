@@ -1,6 +1,9 @@
+var reqError = false;
 $(document).ready(function() {
     var step = 1;
     
+    checkRequirements();
+
     // check database connection
     $('#dbButton').on('click', function($e) {
         $e.preventDefault();
@@ -109,7 +112,9 @@ $(document).ready(function() {
             }
         ];
 
-        chainRequests(requests, 0, 0);
+        var successful = chainRequestsInstall(requests, 0, 0);
+
+        console.log('install was ' + successful);
     });
 
     $('.btn-next').click(function (e) {
@@ -136,7 +141,7 @@ function sendRequest(sendData, sendAsync, sendBeforeSend = null)
     });
 }
 
-function chainRequests(requests, index, progress)
+function chainRequestsInstall(requests, index, progress)
 {
     var msgEl = $('#installMessages');
 
@@ -149,10 +154,14 @@ function chainRequests(requests, index, progress)
                 progress += requests[index].weight;
 
                 $('#installProgress').attr('aria-valuenow', progress).css('width', progress + '%');
-                chainRequests(requests, index + 1, progress);
+                return chainRequestsInstall(requests, index + 1, progress);
             }
+
+            return false;
         })
     }
+
+    return true;
 }
 
 function hideEl(el) {
@@ -248,4 +257,86 @@ function checkPasswordConfirm(el)
         $('#adminPasswordConfirmError').html('');
         return true;
     }
+}
+
+function checkRequirements()
+{
+    var obligatory = {
+        php: 'PHP >= 7.1.3',
+        mysql: 'Mysql database ^5.6',
+        pdo: 'PDO PHP Extension',
+        tokenizer: 'Tokenizer PHP Extension',
+        mbstring: 'Mbstring PHP Extension',
+        openssl: 'OpenSSL PHP Extension',
+        xml: 'XML PHP Extension',
+        ctype: 'Ctype PHP Extension',
+        gd: 'GD PHP Extension',
+        json: 'JSON PHP Extension',
+        bcmath: 'BCMath PHP Extension',
+        curl: 'cURL PHP Extension',
+        zip: 'ZipArchive PHP Library is required'
+    };
+
+    var optional = {
+        imagick: 'Imagick PHP Extension',
+        optim: 'JpegOptim',
+        opti: 'Optipng',
+        quant: 'Pngquant 2',
+        svgo: 'SVGO',
+        gif: 'Gifsicle'
+    };
+
+    var requests = [];
+
+    $.each(obligatory, function (key, value) {
+        var data = {};
+        data['ob_check'] = key;
+        requests.push({
+            call: function() { return sendRequest(data, true) },
+            message: value,
+            ul: $('#obReq'),
+            ob: true
+        });
+    });
+
+    $.each(optional, function (key, value) {
+        var data = {};
+        data['op_check'] = key;
+        requests.push({
+            call: function() { return sendRequest(data, true) },
+            message: value,
+            ul: $('#opReq'),
+            ob: false
+        });
+    });
+
+    var errObj = {
+        err: false
+    };
+
+    $('#obReq').html('');
+    $('#opReq').html('');
+
+    var retval = chainRequestsReq(requests, 0, errObj, true);
+}
+
+function chainRequestsReq(requests, index, errObj, canContinue)
+{
+    var promises = [];
+    requests.forEach(element => {
+        promises.push(element.call())
+    });
+
+    $.when(...promises).then(function () {
+        var error = false;
+        for(var key in arguments) {
+            requests[key].ul.append('<li>' + requests[key].message + ' ' + arguments[key][0] + '</li>');
+
+            if (requests[key].ob && arguments[key][0] == 'neexistuje') {
+                error = true;
+            }
+        }
+
+        $('#reqBtnNext').prop('disabled', error);
+    });
 }
