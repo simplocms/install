@@ -50,11 +50,11 @@ $(document).ready(function() {
         var i = 0;
 
         if (! checkAdminSection()) {
-            console.log('bad');
             return;
-        }        
+        }
 
         var msgEl = $('#installMessages');
+
         var form = $('#dbForm');
         var formData = {};
 
@@ -72,39 +72,44 @@ $(document).ready(function() {
         var storeAdminData = $.extend({}, adminData, formData);
         storeAdminData['store_admin'] = true;
 
-        var unzipData = $.extend({}, {}, formData);
-        unzipData['unzip_file'] = true;
+        var envData = $.extend({}, {}, formData);
+        envData['create_env'] = true;
 
-        sendRequest(unzipData, false, function () {
-            hideEl($('#tab-' + step++));
-            showEl($('#tab-' + step));
-        })
-        .done(function(data) {
-            $('#installMessages').append(data + '<br>');
-        }).fail(function(data) {
-            console.log(data)
-        })
+        var requests = [
+            {
+                call: function() {
+                        return sendRequest({unzip_file: true}, true, function () {
+                        hideEl($('#tab-' + step++));
+                        showEl($('#tab-' + step));
+                        msgEl.append('Unzipping cms');
+                    })
+                },
+                message: null,
+                wieght: 33
+            },
+            {
+                call: function() { return sendRequest(envData, true) },
+                message: 'Creating env',
+                wieght: 0.8
+            },
+            {
+                call: function() { return sendRequest({migrate: true}, true) },
+                message: 'Creating tables',
+                wieght: 64
+            },
+            {
+                call: function() { return sendRequest({db_seed: true}, true) },
+                message: 'Seeding data',
+                weigh: 1.7
+            },
+            {
+                call: function() { return sendRequest(storeAdminData, true) },
+                message: 'Creating user',
+                weigh: 0.5
+            }
+        ];
 
-        sendRequest({migrate: true}, false)
-        .done(function(data) {
-            $('#installMessages').append(data + '<br>');
-        }).fail(function(data) {
-            console.log(data)
-        })
-
-        sendRequest({db_seed: true}, false)
-        .done(function(data) {
-            $('#installMessages').append(data + '<br>');
-        }).fail(function(data) {
-            console.log(data)
-        })
-
-        sendRequest(storeAdminData, false)
-        .done(function(data) {
-            $('#installMessages').append(data + '<br>');
-        }).fail(function(data) {
-            console.log(data)
-        })
+        chainRequests(requests, 0);
     });
 
     $('.btn-next').click(function (e) {
@@ -129,6 +134,22 @@ function sendRequest(sendData, sendAsync, sendBeforeSend = null)
         async: sendAsync,
         beforeSend: sendBeforeSend
     });
+}
+
+function chainRequests(requests, index)
+{
+    var msgEl = $('#installMessages');
+
+    if (typeof requests[index] !== 'undefined') {
+        msgEl.html(requests[index].message);
+
+        $.when(requests[index].call()).then(function( data, textStatus, jqXHR ) {
+            msgEl.html(jqXHR.responseText);
+            if (jqXHR.status == 200) {
+                chainRequests(requests, index + 1);
+            }
+        })
+    }
 }
 
 function hideEl(el) {

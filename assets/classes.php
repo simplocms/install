@@ -434,16 +434,18 @@ class Admin
 class CustomException
 {
     private $message;
+    private $code;
 
-    public function __construct($message)
+    public function __construct($message, $code = 301)
     {
         $this->message = $message;
+        $this->code = $code;
     }
 
     public function throw()
     {
         echo $this->message;
-        http_response_code(301);
+        http_response_code($this->code);
         exit;
     }
 }

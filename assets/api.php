@@ -27,7 +27,7 @@ if (isset($_POST['db_type'])) {
 
     DbConnection::getInstance()->checkConnection(! isset($_POST['store_admin']));
 
-    if (! isset($_POST['unzip_file']) && ! isset($_POST['store_admin'])) {
+    if (! isset($_POST['create_env']) && ! isset($_POST['store_admin'])) {
         exit;
     }
 }
@@ -54,8 +54,7 @@ if (isset($_POST['admin_first_name'])) {
     }
 
     if (! isset($_POST['store_admin'])) {
-        echo "Admin creditentials are good";
-        exit;
+        (new CustomException('Admin creditentials are good', 200))->throw();
     }
 }
 
@@ -69,11 +68,13 @@ if (isset($_POST['unzip_file'])) {
 
         unlink('source.zip');
 
-        echo "Unziped\n";
-    } else {
-        (new CustomException('Failed unziping source'))->throw();
+        (new CustomException('Unziped', 200))->throw();
     }
 
+    (new CustomException('Failed unziping source'))->throw();
+}
+
+if (isset($_POST['create_env'])) {
     DbConnection::getInstance()->writeEnv();
 
     if (execute("php artisan key:generate")) {
@@ -81,8 +82,7 @@ if (isset($_POST['unzip_file'])) {
         (new CustomException("Couldn't create .env file."));
     }
 
-    echo "Env created\n";
-    exit;
+    (new CustomException('Env created', 200))->throw();
 }
 
 if (isset($_POST['migrate'])) {
@@ -91,8 +91,7 @@ if (isset($_POST['migrate'])) {
         (new CustomException("Couldn't migrate database, check .env file."));
     }
 
-    echo "Database succesfully migrated\n";
-    exit;
+    (new CustomException('Database succesfully migrated', 200))->throw();
 }
 
 if (isset($_POST['db_seed'])) {
@@ -101,13 +100,11 @@ if (isset($_POST['db_seed'])) {
         (new CustomException("Couldn't seed database, check .env file."));
     }
 
-    echo "Database succesfully seeded\n";
-    exit;
+    (new CustomException('Database seeded', 200))->throw();
 }
 
 if (isset($_POST['store_admin'])) {
     Admin::getInstance()->store();
 
-    echo "Admin user created, ready to use.";
-    exit;
+    (new CustomException('Admin user created, ready to use.', 200))->throw();
 }
