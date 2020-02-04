@@ -115,7 +115,7 @@ if (isset($_POST['ob_check'])) {
     if ($exists) {
         (new CustomException('existuje', 200))->throw();
     } else {
-        (new CustomException('neexistuje', 200))->throw();
+        (new CustomException('neexistuje'))->throw();
     }
 }
 
@@ -125,6 +125,16 @@ if (isset($_POST['op_check'])) {
     if ($exists) {
         (new CustomException('existuje', 200))->throw();
     } else {
-        (new CustomException('neexistuje', 200))->throw();
+        (new CustomException('neexistuje'))->throw();
+    }
+}
+
+if (isset($_POST['perm_check'])) {
+    $exists = checkDirPermissions();
+
+    if ($exists) {
+        (new CustomException('existuje', 200))->throw();
+    } else {
+        (new CustomException('neexistuje'))->throw();
     }
 }

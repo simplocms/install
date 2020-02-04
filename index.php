@@ -36,16 +36,8 @@
 
         <div class="container">
             <h5>Folder perms</h5>
-            <div>
-            <?php 
-                if ($perm = checkDirPermissions()) {
-                    echo 'Permissions are good';
-                } else {
-                    $canContinue = $perm;
-                    echo 'Permissions are bad';
-                }
-            ?>
-            </div>
+            <ul id="folderPerm">
+            </ul>
         </div>
 
         <div class="container">

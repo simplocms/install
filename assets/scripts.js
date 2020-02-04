@@ -295,8 +295,17 @@ function checkRequirements()
             call: function() { return sendRequest(data, true) },
             message: value,
             ul: $('#obReq'),
-            ob: true
+            ob: true,
+            key: key
         });
+    });
+
+    requests.push({
+        call: function() { return sendRequest({perm_check: true}, true) },
+        message: 'Installation directory must be writable',
+        ul: $('#folderPerm'),
+        ob: true,
+        key: 'folderPerm'
     });
 
     $.each(optional, function (key, value) {
@@ -306,37 +315,32 @@ function checkRequirements()
             call: function() { return sendRequest(data, true) },
             message: value,
             ul: $('#opReq'),
-            ob: false
+            ob: false,
+            key: key
         });
     });
 
-    var errObj = {
-        err: false
-    };
-
     $('#obReq').html('');
     $('#opReq').html('');
+    $('#folderPerm').html('');
 
-    var retval = chainRequestsReq(requests, 0, errObj, true);
+    $('#reqBtnNext').prop('disabled', false);
+    chainRequestsReq(requests, 0);
 }
 
-function chainRequestsReq(requests, index, errObj, canContinue)
+function chainRequestsReq(requests, index)
 {
-    var promises = [];
-    requests.forEach(element => {
-        promises.push(element.call())
-    });
-
-    $.when(...promises).then(function () {
-        var error = false;
-        for(var key in arguments) {
-            requests[key].ul.append('<li>' + requests[key].message + ' ' + arguments[key][0] + '</li>');
-
-            if (requests[key].ob && arguments[key][0] == 'neexistuje') {
-                error = true;
+    if (typeof requests[index] !== 'undefined') {
+        $.when(requests[index].call()).then(function( data, textStatus, jqXHR ) {
+            requests[index].ul.append('<li>' + requests[index].message + ' ' + jqXHR.responseText + '</li>');
+            return chainRequestsReq(requests, index + 1);
+        }, function(data) {
+            if (requests[index].ob) {
+                $('#reqBtnNext').prop('disabled', true);
             }
-        }
 
-        $('#reqBtnNext').prop('disabled', error);
-    });
+            requests[index].ul.append('<li>' + requests[index].message + ' ' + data.responseText + '</li>');
+            return chainRequestsReq(requests, index + 1);
+        });
+    }
 }
