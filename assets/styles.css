@@ -5,3 +5,7 @@
 .text-primary {
     color: #2799FB !important;
 }
+
+.progress-bar {
+    transition: width 1s ease;
+}

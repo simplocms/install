@@ -191,7 +191,11 @@
         </div>
     </div>
 
-    <div class="contianer" id="tab-4">
+    <div class="container d-none py-4" id="tab-4">
+        <div class="progress my-4">
+            <div class="progress-bar w-0" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="installProgress">
+            </div>
+        </div>
         <div id="installMessages">
         </div>
     </div>

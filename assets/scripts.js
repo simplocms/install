@@ -78,38 +78,38 @@ $(document).ready(function() {
         var requests = [
             {
                 call: function() {
-                        return sendRequest({unzip_file: true}, true, function () {
+                    return sendRequest({unzip_file: true}, true, function () {
                         hideEl($('#tab-' + step++));
                         showEl($('#tab-' + step));
                         msgEl.append('Unzipping cms');
                     })
                 },
                 message: null,
-                wieght: 33
+                weight: 33
             },
             {
                 call: function() { return sendRequest(envData, true) },
                 message: 'Creating env',
-                wieght: 0.8
+                weight: 0.8
             },
             {
                 call: function() { return sendRequest({migrate: true}, true) },
                 message: 'Creating tables',
-                wieght: 64
+                weight: 64
             },
             {
                 call: function() { return sendRequest({db_seed: true}, true) },
                 message: 'Seeding data',
-                weigh: 1.7
+                weight: 1.7
             },
             {
                 call: function() { return sendRequest(storeAdminData, true) },
                 message: 'Creating user',
-                weigh: 0.5
+                weight: 0.5
             }
         ];
 
-        chainRequests(requests, 0);
+        chainRequests(requests, 0, 0);
     });
 
     $('.btn-next').click(function (e) {
@@ -136,7 +136,7 @@ function sendRequest(sendData, sendAsync, sendBeforeSend = null)
     });
 }
 
-function chainRequests(requests, index)
+function chainRequests(requests, index, progress)
 {
     var msgEl = $('#installMessages');
 
@@ -146,7 +146,10 @@ function chainRequests(requests, index)
         $.when(requests[index].call()).then(function( data, textStatus, jqXHR ) {
             msgEl.html(jqXHR.responseText);
             if (jqXHR.status == 200) {
-                chainRequests(requests, index + 1);
+                progress += requests[index].weight;
+
+                $('#installProgress').attr('aria-valuenow', progress).css('width', progress + '%');
+                chainRequests(requests, index + 1, progress);
             }
         })
     }
