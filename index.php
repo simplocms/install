@@ -12,7 +12,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     
-    <style><?php include 'assets/styles.css'; ?></style>
+    <style>
+        <?php include 'assets/styles.css'; ?>
+    </style>
 </head>
 <body>
     <div class="bg-info text-primary text-center py-5">
