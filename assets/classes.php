@@ -3,19 +3,19 @@
 class Requirements
 {
     public const ITEMS = [
-        'php' => 'PHP >= 7.1.3',
-        'mysql' => ' Mysql database ^5.6',
-        'pdo' => 'PDO PHP Extension',
-        'tokenizer' => 'Tokenizer PHP Extension',
-        'mbstring' => 'Mbstring PHP Extension',
-        'openssl' => 'OpenSSL PHP Extension',
-        'xml' => 'XML PHP Extension',
-        'ctype' => 'Ctype PHP Extension',
-        'gd' => 'GD PHP Extension',
-        'json' => 'JSON PHP Extension',
-        'bcmath' => 'BCMath PHP Extension',
-        'curl' => 'cURL PHP Extension',
-        'zip' => 'ZipArchive PHP Library is required'
+        'php',
+        'mysql',
+        'pdo',
+        'tokenizer',
+        'mbstring',
+        'openssl',
+        'xml',
+        'ctype',
+        'gd',
+        'json',
+        'bcmath',
+        'curl',
+        'zip'
     ];
 
     public static function checkRequirement(string $ext): bool
@@ -70,12 +70,12 @@ class Requirements
 class Optional
 {
     public const ITEMS = [
-        'imagick' => 'Imagick PHP Extension',
-        'optim' => 'JpegOptim',
-        'opti' => 'Optipng',
-        'quant' => 'Pngquant 2',
-        'svgo' => 'SVGO',
-        'gif' => 'Gifsicle'
+        'imagick',
+        'optim',
+        'opti',
+        'quant',
+        'svgo',
+        'gif'
     ];
 
     public static function checkRequirement(string $module): bool

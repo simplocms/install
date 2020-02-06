@@ -162,6 +162,14 @@
         <div id="installMessages">
         </div>
     </div>
+
+    <div class="container d-none py-4" id="tab-installError">
+        Error
+    </div>
+
+    <div class="container d-none py-4" id="tab-installSuccess">
+        Success
+    </div>
 </body>
 
 <script>

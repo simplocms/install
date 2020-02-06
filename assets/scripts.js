@@ -1,7 +1,7 @@
 var reqError = false;
+var step = 1;
+
 $(document).ready(function() {
-    var step = 1;
-    
     checkRequirements();
 
     // check database connection
@@ -112,9 +112,7 @@ $(document).ready(function() {
             }
         ];
 
-        var successful = chainRequestsInstall(requests, 0, 0);
-
-        console.log('install was ' + successful);
+        chainRequestsInstall(requests, 0, 0);
     });
 
     $('.btn-next').click(function (e) {
@@ -150,18 +148,18 @@ function chainRequestsInstall(requests, index, progress)
 
         $.when(requests[index].call()).then(function( data, textStatus, jqXHR ) {
             msgEl.html(jqXHR.responseText);
-            if (jqXHR.status == 200) {
-                progress += requests[index].weight;
+            progress += requests[index].weight;
 
-                $('#installProgress').attr('aria-valuenow', progress).css('width', progress + '%');
-                return chainRequestsInstall(requests, index + 1, progress);
-            }
-
-            return false;
-        })
+            $('#installProgress').attr('aria-valuenow', progress).css('width', progress + '%');
+            chainRequestsInstall(requests, index + 1, progress);
+        }, function (data) {
+            hideEl($('#tab-' + step));
+            showEl($('#tab-installError'));
+        });
+    } else {
+        hideEl($('#tab-' + step));
+        showEl($('#tab-installSuccess'));
     }
-
-    return true;
 }
 
 function hideEl(el) {
@@ -262,28 +260,85 @@ function checkPasswordConfirm(el)
 function checkRequirements()
 {
     var obligatory = {
-        php: 'PHP >= 7.1.3',
-        mysql: 'Mysql database ^5.6',
-        pdo: 'PDO PHP Extension',
-        tokenizer: 'Tokenizer PHP Extension',
-        mbstring: 'Mbstring PHP Extension',
-        openssl: 'OpenSSL PHP Extension',
-        xml: 'XML PHP Extension',
-        ctype: 'Ctype PHP Extension',
-        gd: 'GD PHP Extension',
-        json: 'JSON PHP Extension',
-        bcmath: 'BCMath PHP Extension',
-        curl: 'cURL PHP Extension',
-        zip: 'ZipArchive PHP Library is required'
+        php: {
+            label: 'PHP >= 7.1.3',
+            link: '#'
+        },
+        mysql: {
+            label: 'Mysql database ^5.6',
+            link: '#'
+        },
+        pdo: {
+            label: 'PDO PHP Extension',
+            link: '#'
+        },
+        tokenizer: {
+            label: 'Tokenizer PHP Extension',
+            link: '#'
+        },
+        mbstring: {
+            label: 'Mbstring PHP Extension',
+            link: '#'
+        },
+        openssl: {
+            label: 'OpenSSL PHP Extension',
+            link: '#'
+        },
+        xml: {
+            label: 'XML PHP Extension',
+            link: '#'
+        },
+        ctype: {
+            label: 'Ctype PHP Extension',
+            link: '#'
+        },
+        gd: {
+            label: 'GD PHP Extension',
+            link: '#'
+        },
+        json: {
+            label: 'JSON PHP Extension',
+            link: '#'
+        },
+        bcmath: {
+            label: 'BCMath PHP Extension',
+            link: '#'
+        },
+        curl: {
+            label: 'cURL PHP Extension',
+            link: '#'
+        },
+        zip: {
+            label: 'ZipArchive PHP Library is required',
+            link: '#'
+        }
     };
 
     var optional = {
-        imagick: 'Imagick PHP Extension',
-        optim: 'JpegOptim',
-        opti: 'Optipng',
-        quant: 'Pngquant 2',
-        svgo: 'SVGO',
-        gif: 'Gifsicle'
+        imagick: {
+            label: 'Imagick PHP Extension',
+            link: '#'
+        },
+        optim: {
+            label: 'JpegOptim',
+            link: '#'
+        },
+        opti: {
+            label: 'Optipng',
+            link: '#'
+        },
+        quant: {
+            label: 'Pngquant 2',
+            link: '#'
+        },
+        svgo: {
+            label: 'SVGO',
+            link: '#'
+        },
+        gif: {
+            label: 'Gifsicle',
+            link: '#'
+        }
     };
 
     var requests = [];
@@ -332,14 +387,23 @@ function chainRequestsReq(requests, index)
 {
     if (typeof requests[index] !== 'undefined') {
         $.when(requests[index].call()).then(function( data, textStatus, jqXHR ) {
-            requests[index].ul.append('<li>' + requests[index].message + ' ' + jqXHR.responseText + '</li>');
+            var message = typeof requests[index].message == 'string' ? requests[index].message : requests[index].message.label;
+
+            requests[index].ul.append('<li>' + message + ' Success</li>');
             return chainRequestsReq(requests, index + 1);
         }, function(data) {
+            var message = typeof requests[index].message == 'string' ? requests[index].message : requests[index].message.label;
+
             if (requests[index].ob) {
                 $('#reqBtnNext').prop('disabled', true);
             }
 
-            requests[index].ul.append('<li>' + requests[index].message + ' ' + data.responseText + '</li>');
+            if (typeof requests[index].message == 'string') {
+                requests[index].ul.append('<li>X ' + message + ' ' + data.responseText + '</li>');
+            } else {
+                requests[index].ul.append('<li>' + message + ' ' + '<a href="' + requests[index].message.link + '" target="_blank">Find more</a></li>');
+            }
+
             return chainRequestsReq(requests, index + 1);
         });
     }
